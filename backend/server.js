@@ -1,8 +1,8 @@
 import express from "express";
-import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import http from 'http';
+import connectDB from './config/database.js'
 import {default as authRoute} from './routes/auth.js'
 
 dotenv.config({ path: "./config/config.env" });
@@ -10,17 +10,19 @@ dotenv.config({ path: "./config/config.env" });
 //initialize express
 const app = express();
 
+const server = http.createServer(app);
+
 //middleware
 app.use(cors());
 app.use(express.json());
 
 //connect to mongodb
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("Connected"))
-  .catch((err) => console.log("Connection Error: ", err));
+connectDB();
 
+//User Routes
 app.use('/api/auth', authRoute)
+
+//Message Routes
 
 const PORT = process.env.PORT || 5000;
 
